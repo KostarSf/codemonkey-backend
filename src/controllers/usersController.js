@@ -61,7 +61,7 @@ class UsersController {
   async getOne(req, res, next) {
     try {
       const { id } = req.params;
-      let user = await User.findOne({where: {id}})
+      let user = await User.findOne({where: {id}, include: 'directions'})
       res.json(user)
     } catch (e) {
       next(ApiError.badRequest(e.message))

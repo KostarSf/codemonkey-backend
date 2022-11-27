@@ -14,7 +14,7 @@ const Direction = sequelize.define('direction', {
   name: { type: DataTypes.STRING },
   color: { type: DataTypes.STRING },
   description: { type: DataTypes.STRING },
-  schema: { type: DataTypes.STRING }
+  schema: { type: DataTypes.STRING, allowNull: true }
 })
 
 const UserDirection = sequelize.define('user_direction', {

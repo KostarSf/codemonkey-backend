@@ -9,8 +9,11 @@ class DirectionsController {
         next(ApiError.badRequest("Для создания направления нужно указать name, color и description"))
         return
       }
+      if (schema === undefined) {
+        schema = null
+      }
       let currentDirection = await Direction.findOne({where: {schema}})
-      if (currentDirection) {
+      if (currentDirection && schema !== null) {
         next(ApiError.badRequest(`Направление со схемой ${currentDirection.schema} уже существует с id ${currentDirection.id} и именем ${currentDirection.name}`))
         return
       }
