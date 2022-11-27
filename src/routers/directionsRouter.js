@@ -7,6 +7,5 @@ router.post('/', directionsController.create);
 router.get('/', directionsController.getAll);
 router.put('/', directionsController.update);
 router.get('/:id', directionsController.getOne);
-router.get('/:id/schema', directionsController.getSchema);
 
 module.exports = router;

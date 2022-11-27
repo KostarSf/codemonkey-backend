@@ -1,4 +1,4 @@
-const { User } = require('../models/models')
+const { User, Direction } = require('../models/models')
 const ApiError = require('../error/ApiError')
 const md5 = require('md5')
 
@@ -23,8 +23,12 @@ class UsersController {
   }
 
   async getAll(req, res, next) {
-    let users = await User.findAll({})
-    return res.json(users)
+    try {
+      let users = await User.findAll({})
+      return res.json(users)
+    } catch (e) {
+      next(ApiError.badRequest(e.message))
+    }
   }
 
   async update(req, res, next) {
@@ -55,9 +59,77 @@ class UsersController {
   }
 
   async getOne(req, res, next) {
-    const { id } = req.params;
-    let user = await User.findOne({where: {id}})
-    res.json(user)
+    try {
+      const { id } = req.params;
+      let user = await User.findOne({where: {id}})
+      res.json(user)
+    } catch (e) {
+      next(ApiError.badRequest(e.message))
+    }
+  }
+
+  async getUserDirections(req, res, next) {
+    try {
+      const { id } = req.params;
+      let user = await User.findOne({where: {id}})
+      if (!user) {
+        next(ApiError.badRequest("Пользователя с таким id не существует"))
+        return
+      }
+      return res.json(await user.getDirections())
+    } catch (e) {
+      next(ApiError.badRequest(e.message))
+    }
+  }
+
+  async addDirection(req, res, next) {
+    try {
+      const { id } = req.params
+      let { direction_id } = req.body
+      if (!direction_id) {
+        next(ApiError.badRequest("Нужно указать direction_id"))
+        return
+      }
+      let user = await User.findOne({where: {id}, include: 'directions'})
+      if (!user) {
+        next(ApiError.badRequest("Пользователя с таким id не существует"))
+        return
+      }
+      let direction = await Direction.findOne({where: {id: direction_id}})
+      if (!direction) {
+        next(ApiError.badRequest("Направления с таким id не существует"))
+        return
+      }
+      user.addDirection(direction)
+      return res.json(user)
+    } catch (e) {
+      next(ApiError.badRequest(e.message))
+    }
+  }
+
+  async removeDirection(req, res, next) {
+    try {
+      const { id } = req.params
+      let { direction_id } = req.body
+      if (!direction_id) {
+        next(ApiError.badRequest("Нужно указать direction_id"))
+        return
+      }
+      let user = await User.findOne({where: {id}, include: 'directions'})
+      if (!user) {
+        next(ApiError.badRequest("Пользователя с таким id не существует"))
+        return
+      }
+      let direction = await Direction.findOne({where: {id: direction_id}})
+      if (!direction) {
+        next(ApiError.badRequest("Направления с таким id не существует"))
+        return
+      }
+      user.removeDirection(direction)
+      return res.json(user)
+    } catch (e) {
+      next(ApiError.badRequest(e.message))
+    }
   }
 }
 
