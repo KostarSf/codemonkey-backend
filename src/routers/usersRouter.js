@@ -3,6 +3,7 @@ const router = new Router();
 const usersController = require('../controllers/usersController');
 
 // users/
+
 router.post('/', usersController.create); // { name, email, password }
 router.get('/', usersController.getAll);
 router.put('/', usersController.update);  // { id, ?name, ?email, ?password, ?about }
