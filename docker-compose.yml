@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  backend:
+    image: node:18-alpine
+    user: "node"
+    command: sh -c "yarn install && yarn dev"
+    ports:
+      - "5000:5000"
+    privileged: true
+    working_dir: /home/node/app
+    volumes:
+      - ./:/home/node/app
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=1999
+      - DB_NAME=codemonkey
+
+  postgres:
+    image: postgres:12.11-alpine
+    volumes:
+      - es-psql-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=codemonkey
+      - POSTGRES_PASSWORD=1999
+
+volumes:
+  es-psql-data:
